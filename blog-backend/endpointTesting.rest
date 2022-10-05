@@ -1,0 +1,19 @@
+GET http://localhost:3003/api/blogs HTTP/1.1
+
+###
+POST http://localhost:3003/api/blogs HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "today is Friday",
+    "author":"1st blog author",
+    "url": "google.com",
+    "likes": "0"
+}
+
+####
+GET http://localhost:3003/api/blogs/63363ac9fbf987d7d6898b6d HTTP/1.1
+
+
+####
+DELETE http://localhost:3003/api/blogs/6335761dd570c273b6e1e360 HTTP/1.1
