@@ -18,7 +18,18 @@ blogsRouter.get("/:id", (request, response, next) => {
 });
 
 blogsRouter.post("/", (request, response) => {
-  const blog = new Blog(request.body);
+  const body = request.body;
+
+  if (body.title === undefined || body.url === undefined) {
+    return response.status(400).json({ error: "title or url missing" });
+  }
+
+  const blog = new Blog({
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes === undefined ? 0 : body.likes,
+  });
 
   blog.save().then((savedBlog) => {
     response.status(201).json(savedBlog);

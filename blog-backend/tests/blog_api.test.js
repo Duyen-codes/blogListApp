@@ -54,3 +54,39 @@ test("4.10 HTTP POST request to /api/blogs url creates a new blog", async () => 
   const titles = blogsAtEnd.map((b) => b.title);
   expect(titles).toContain("post a blog with async await");
 });
+
+test("4.11 verifies that if likes property from the request, it will default to 0", async () => {
+  const blogWithNoLikes = {
+    title: "this blog does not have likes property",
+    author: "ex 4.11 step4",
+    url: "fullstackopen.com",
+  };
+
+  await api
+    .post("/api/blogs")
+    .send(blogWithNoLikes)
+    .expect(201)
+    .expect("Content-Type", /application\/json/);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+
+  const likesArray = blogsAtEnd.map((b) => b.likes);
+  expect(likesArray[likesArray.length - 1]).toBe(0);
+});
+
+test("create a blog to /api/blogs, if title or url missing, respond status 400", async () => {
+  const blogWithoutTitleAndUrl = {
+    author: "fullstackopen",
+    likes: 0,
+  };
+
+  await api
+    .post("/api/blogs")
+    .send(blogWithoutTitleAndUrl)
+    .expect(400)
+    .expect("Content-Type", /application\/json/);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+});
