@@ -42,7 +42,7 @@ blogsRouter.delete("/:id", (request, response, next) => {
   });
 });
 
-blogsRouter.put("/:id", (request, response, next) => {
+blogsRouter.put("/:id", async (request, response, next) => {
   const body = request.body;
   const blog = {
     title: body.title,
@@ -51,11 +51,10 @@ blogsRouter.put("/:id", (request, response, next) => {
     likes: body.likes,
   };
 
-  Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
-    .then((updatedBlog) => {
-      response.status(200).json(updatedBlog);
-    })
-    .catch((error) => next(error));
+  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
+    new: true,
+  });
+  response.status(200).json(updatedBlog);
 });
 
 module.exports = blogsRouter;

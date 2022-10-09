@@ -7,11 +7,11 @@ const Blog = require("../models/blog");
 
 beforeEach(async () => {
   await Blog.deleteMany({});
-
-  for (let blog of helper.initialBlogs) {
-    let blogObject = new Blog(blog);
-    await blogObject.save();
-  }
+  await Blog.insertMany(helper.initialBlogs);
+  // for (let blog of helper.initialBlogs) {
+  //   let blogObject = new Blog(blog);
+  //   await blogObject.save();
+  // }
 });
 
 test("HTTP GET request to /api/blogs url, blog list application returns blog posts in JSON format", async () => {
@@ -89,4 +89,13 @@ test("create a blog to /api/blogs, if title or url missing, respond status 400",
 
   const blogsAtEnd = await helper.blogsInDb();
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+});
+
+describe("deletion of a blog", () => {
+  test("succeeds with status 204 ", async () => {
+    const blogsAtStart = await helper.blogsInDb();
+
+    const blogToDelete = blogsAtStart[0];
+    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+  });
 });
