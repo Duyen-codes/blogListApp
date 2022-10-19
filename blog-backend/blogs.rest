@@ -3,11 +3,12 @@ GET http://localhost:3003/api/blogs HTTP/1.1
 ###
 POST http://localhost:3003/api/blogs HTTP/1.1
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjYzNGZlMDE4NTQ1MzJlYTliY2FhZmIyYiIsImlhdCI6MTY2NjE4NDAwN30.nbF67CJrp893r4bVQv1gKfR2CAimYS3oS6pTkyTvw3k
 
 {
-    "title": "today is Friday",
-    "author":"1st blog author",
-    "url": "google.com",
+    "title": "this blog is with root user, salainen is password, username is Superuser",
+    "author":"token applied author",
+    "url": "Superuser.com",
     "likes": "0"
 }
 

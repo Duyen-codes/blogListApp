@@ -7,13 +7,8 @@ const blogSchema = new mongoose.Schema({
   likes: { type: Number, default: 0 },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-<<<<<<< HEAD
-    ref: 'User'
-  }
-=======
     ref: "User",
   },
->>>>>>> 92fb8dd0fbb95376308263a9b8574251890c5dfa
 });
 
 blogSchema.set("toJSON", {
