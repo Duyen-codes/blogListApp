@@ -1,0 +1,26 @@
+POST http://localhost:3003/api/users HTTP/1.1
+Content-Type: application/json
+
+{
+    "username":"james007",
+    "name":"James Bond",
+    "password":"james007"
+}
+
+### 
+GET http://localhost:3003/api/users HTTP/1.1
+
+
+### 
+POST http://localhost:3003/api/blogs HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "blog by username root, name is Superuser, password is salainen",
+    "author":"Superuser",
+    "url": "Superuser.com",
+    "likes": "0",
+    "userId": "634fe01854532ea9bcaafb2b"
+}
+
+
