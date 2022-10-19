@@ -9,11 +9,11 @@ const User = require("../models/user");
 
 beforeEach(async () => {
   await Blog.deleteMany({});
-
-  for (let blog of helper.initialBlogs) {
-    let blogObject = new Blog(blog);
-    await blogObject.save();
-  }
+  await Blog.insertMany(helper.initialBlogs);
+  // for (let blog of helper.initialBlogs) {
+  //   let blogObject = new Blog(blog);
+  //   await blogObject.save();
+  // }
 });
 
 test("HTTP GET request to /api/blogs url, blog list application returns blog posts in JSON format", async () => {
@@ -93,6 +93,7 @@ test("create a blog to /api/blogs, if title or url missing, respond status 400",
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
 });
 
+<<<<<<< HEAD
 // Tests for users
 
 describe("when there is initially one user at db", () => {
@@ -144,5 +145,13 @@ describe("when there is initially one user at db", () => {
     expect(result.body.error).toContain("username must be unique");
     const usersAtEnd = await helper.usersInDb();
     expect(usersAtEnd).toHaveLength(usersAtStart.length);
+=======
+describe("deletion of a blog", () => {
+  test("succeeds with status 204 ", async () => {
+    const blogsAtStart = await helper.blogsInDb();
+
+    const blogToDelete = blogsAtStart[0];
+    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+>>>>>>> 92fb8dd0fbb95376308263a9b8574251890c5dfa
   });
 });
