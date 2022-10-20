@@ -62,9 +62,6 @@ blogsRouter.post("/", async (request, response) => {
   await user.save();
 
   response.status(201).json(savedBlog);
-  // blog.save().then((savedBlog) => {
-  //   response.status(201).json(savedBlog);
-  // });
 });
 
 blogsRouter.delete("/:id", (request, response, next) => {
