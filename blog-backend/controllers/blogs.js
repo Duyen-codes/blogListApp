@@ -1,8 +1,7 @@
 const blogsRouter = require("express").Router();
 const Blog = require("../models/blog");
-const User = require("../models/user");
-const jwt = require("jsonwebtoken");
 const middleware = require("../utils/middleware");
+const logger = require("../utils/logger");
 
 blogsRouter.get("/", async (request, response) => {
   const blogs = await Blog.find({}).populate("user", {
@@ -40,14 +39,15 @@ blogsRouter.get("/:id", async (request, response, next) => {
 blogsRouter.post("/", middleware.userExtractor, async (request, response) => {
   const body = request.body;
   // get user from request object
-  const user = request.user;
-  console.log("user from request.user", user);
+  const user = await request.user;
+  logger.info("user from request.user", user);
   // const token = getTokenFrom(request);
   // const decodedToken = jwt.verify(request.token, process.env.SECRET);
   if (body.title === undefined || body.url === undefined) {
     return response.status(400).json({ error: "title or url missing" });
   }
 
+  logger.info("user._id", user._id);
   const blog = new Blog({
     title: body.title,
     author: body.author,
@@ -67,11 +67,11 @@ blogsRouter.delete(
   middleware.userExtractor,
   async (request, response, next) => {
     const blog = await Blog.findById(request.params.id);
-    console.log("blog to delete", blog);
+    logger.info("blog to delete", blog);
     // get user from request object
     const user = request.user;
-    console.log("user from request.user", request.user);
-    console.log("blog.user.toString() from delete route", blog.user.toString());
+    logger.info("user from request.user", request.user);
+    logger.info("blog.user.toString() from delete route", blog.user.toString());
 
     // const decodedToken = jwt.verify(request.token, process.env.SECRET);
     // if (!request.token || !decodedToken.id) {
@@ -79,8 +79,9 @@ blogsRouter.delete(
     //     error: "token missing or invalid",
     //   });
     // }
+
     const userid = user._id;
-    console.log("userid", userid);
+    logger.info("userid", userid);
 
     if (blog.user.toString() === userid.toString()) {
       await Blog.findByIdAndRemove(request.params.id);

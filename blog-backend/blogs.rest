@@ -3,11 +3,11 @@ GET http://localhost:3003/api/blogs HTTP/1.1
 ###
 POST http://localhost:3003/api/blogs HTTP/1.1
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjYzNGZlMDE4NTQ1MzJlYTliY2FhZmIyYiIsImlhdCI6MTY2NjI1Njk4NywiZXhwIjoxNjY2MzQzMzg3fQ.nllbvpmxJ7Kdc0eBwh3aV-Ch_k1YwQGhjLD3hTUrCj0
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjYzNGZlMDE4NTQ1MzJlYTliY2FhZmIyYiIsImlhdCI6MTY2NjI2NjQ1NSwiZXhwIjoxNjY2MzUyODU1fQ.liUF5fh1eJHoXMUlkMNUi980_dnD9xksd7eCAbXeKpA
 
 {
-    "title": "removing if decodedToken block.It is created by user: root, password: salainen, username is Superuser",
-    "author":"userExtractor middleware author 3",
+    "title": "findById is working with rest client or not",
+    "author":"mr struggle with tests",
     "url": "Superuser.com",
     "likes": "0"
 }
