@@ -67,11 +67,9 @@ blogsRouter.delete(
   middleware.userExtractor,
   async (request, response, next) => {
     const blog = await Blog.findById(request.params.id);
-    logger.info("blog to delete", blog);
+
     // get user from request object
     const user = request.user;
-    logger.info("user from request.user", request.user);
-    logger.info("blog.user.toString() from delete route", blog.user.toString());
 
     // const decodedToken = jwt.verify(request.token, process.env.SECRET);
     // if (!request.token || !decodedToken.id) {
@@ -81,8 +79,6 @@ blogsRouter.delete(
     // }
 
     const userid = user._id;
-    logger.info("userid", userid);
-
     if (blog.user.toString() === userid.toString()) {
       await Blog.findByIdAndRemove(request.params.id);
       response.status(204).end();
@@ -94,19 +90,34 @@ blogsRouter.delete(
   }
 );
 
-blogsRouter.put("/:id", async (request, response, next) => {
-  const body = request.body;
-  const blog = {
-    title: body.title,
-    author: body.author,
-    url: body.url,
-    likes: body.likes,
-  };
+blogsRouter.put(
+  "/:id",
+  middleware.userExtractor,
+  async (request, response, next) => {
+    const body = request.body;
+    const blog = await Blog.findById(request.params.id);
+    const user = request.user;
+    const userid = user._id;
 
-  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
-    new: true,
-  });
-  response.status(200).json(updatedBlog);
-});
+    const newBlog = {
+      title: body.title,
+      author: body.author,
+      url: body.url,
+      likes: body.likes,
+    };
+
+    if (blog.user.toString() === userid.toString()) {
+      const updatedBlog = await Blog.findByIdAndUpdate(
+        request.params.id,
+        newBlog,
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
+      response.status(200).json(updatedBlog);
+    }
+  }
+);
 
 module.exports = blogsRouter;
