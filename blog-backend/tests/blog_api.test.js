@@ -146,16 +146,15 @@ describe("addition of a new blog", () => {
 
 // Tests for deleting a blog
 describe("deletion of a blog", () => {
+  // before each test, empty user db, create a test user
   beforeEach(async () => {
     await User.deleteMany({});
     const passwordHash = await bcrypt.hash("test", 10);
     const user = new User({ username: "test", name: "test", passwordHash });
-    const savedUser = await user.save();
-    console.log("savedUser", savedUser);
-    console.log("savedUserId", savedUser._id.toString());
+    await user.save();
   });
 
-  test.only("succeeds with status code 204 if token is valid", async () => {
+  test("succeeds with status code 204 if token is valid", async () => {
     // user login
     const response = await api
       .post("/api/login")
@@ -180,27 +179,23 @@ describe("deletion of a blog", () => {
       .expect(201)
       .expect("Content-Type", /application\/json/);
 
-    console.log("savedBlog", savedBlog.body);
+    // blog id to delete
+    const blogToDeleteId = savedBlog.body.id;
 
-    // get blog to delete after posting with logged in user token, presumably the most recently created blog is at the end of blog array??
-
-    const blogsAtEnd = await helper.blogsInDb();
-    const blogToDeleteId = savedBlog.id;
-
-    // delete with token
+    // delete blog with token
     await api
       .delete(`/api/blogs/${blogToDeleteId}`)
       .set("authorization", `bearer ${token}`)
       .expect(204);
 
-    const deletedBlog = await Blog.findById(blogToDeleteId);
+    const blogsAtEndAfterDeleteOneBlog = await helper.blogsInDb();
+    const titles = blogsAtEndAfterDeleteOneBlog.map((blog) => blog.title);
     // expect
-    expect(deletedBlog).toBeNull();
-    // const blogsAtEndAfterDeleteOneBlog = await helper.blogsInDb();
-    // expect(blogsAtEndAfterDeleteOneBlog).toHaveLength(blogsAtEnd.length - 1);
-
-    // const titles = blogsAtEndAfterDeleteOneBlog.map((blog) => blog.title);
-    // expect(titles).not.toContain(blogToDelete.title);
+    expect(await Blog.findById(blogToDeleteId)).toBeNull();
+    expect(blogsAtEndAfterDeleteOneBlog).toHaveLength(
+      helper.initialBlogs.length
+    );
+    expect(titles).not.toContain(savedBlog.body.title);
   }, 10000);
 });
 
