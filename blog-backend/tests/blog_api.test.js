@@ -150,7 +150,9 @@ describe("deletion of a blog", () => {
     await User.deleteMany({});
     const passwordHash = await bcrypt.hash("test", 10);
     const user = new User({ username: "test", name: "test", passwordHash });
-    await user.save();
+    const savedUser = await user.save();
+    console.log("savedUser", savedUser);
+    console.log("savedUserId", savedUser._id.toString());
   });
 
   test.only("succeeds with status code 204 if token is valid", async () => {
@@ -171,35 +173,35 @@ describe("deletion of a blog", () => {
     };
 
     // post blog
-    await api
+    const savedBlog = await api
       .post("/api/blogs")
       .send(newBlog)
       .set({ Authorization: `bearer ${token}` })
       .expect(201)
       .expect("Content-Type", /application\/json/);
 
+    console.log("savedBlog", savedBlog.body);
+
     // get blog to delete after posting with logged in user token, presumably the most recently created blog is at the end of blog array??
 
     const blogsAtEnd = await helper.blogsInDb();
-    console.log("blogsAtEnd", blogsAtEnd);
-    const blogToDelete = blogsAtEnd[blogsAtEnd.length - 1];
-    console.log("blogToDelete", blogToDelete);
-    console.log("blogToDelete.id", blogToDelete.id);
+    const blogToDeleteId = savedBlog.id;
 
     // delete with token
     await api
-      .delete(`/api/blogs/${blogToDelete.id}`)
+      .delete(`/api/blogs/${blogToDeleteId}`)
       .set("authorization", `bearer ${token}`)
       .expect(204);
 
+    const deletedBlog = await Blog.findById(blogToDeleteId);
     // expect
-    const blogsAtEndAfterDeleteOneBlog = await helper.blogsInDb();
-    console.log("blogsAtEndAfterDeleteOneblog", blogsAtEndAfterDeleteOneBlog);
-    expect(blogsAtEndAfterDeleteOneBlog).toHaveLength(blogsAtEnd.length - 1);
+    expect(deletedBlog).toBeNull();
+    // const blogsAtEndAfterDeleteOneBlog = await helper.blogsInDb();
+    // expect(blogsAtEndAfterDeleteOneBlog).toHaveLength(blogsAtEnd.length - 1);
 
-    const titles = blogsAtEndAfterDeleteOneBlog.map((blog) => blog.title);
-    expect(titles).not.toContain(blogToDelete.title);
-  });
+    // const titles = blogsAtEndAfterDeleteOneBlog.map((blog) => blog.title);
+    // expect(titles).not.toContain(blogToDelete.title);
+  }, 10000);
 });
 
 // Tests for users
