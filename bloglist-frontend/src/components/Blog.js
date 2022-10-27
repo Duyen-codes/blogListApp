@@ -13,11 +13,8 @@ const Blog = ({ blog, updateLikes, handleDeleteBlog }) => {
 
   const handleAddLikes = (blog) => {
     const addedLikesObject = {
-      title: blog.title,
-      author: blog.author,
-      url: blog.url,
+      ...blog,
       likes: blog.likes + 1,
-      id: blog.id,
     };
     const id = blog.id;
     updateLikes(addedLikesObject, id);

@@ -8,7 +8,6 @@ import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
 
 const App = () => {
-  const blogFormRef = useRef();
   const [blogs, setBlogs] = useState([]);
   const [errorMessage, setErrorMessage] = useState({
     type: "",
@@ -21,8 +20,9 @@ const App = () => {
   // get blogs
   useEffect(() => {
     blogService.getAll().then((blogs) => {
+      // ex 5.9 list blogs by number of likes
       const sortedBlogs = blogs.sort((a, b) => {
-        return a.likes > b.likes;
+        return b.likes - a.likes;
       });
       setBlogs(sortedBlogs);
     });
@@ -75,6 +75,7 @@ const App = () => {
 
   // add blog
   const addBlog = (blogObject) => {
+    // hide the form by calling blogFormRef.current.toggleVisibility() after a new note has been created
     blogFormRef.current.toggleVisibility();
     blogService.create(blogObject).then((returnedBlog) => {
       setBlogs(blogs.concat(returnedBlog));
@@ -82,12 +83,13 @@ const App = () => {
   };
 
   // update likes
-  const updateLikes = (id, blogObject) => {
-    blogService.update(blogObject, id).then((returnedBlog) => {
-      const index = blogs.findIndex((blog) => blog.id === returnedBlog.id);
-      const copiedBlogs = [...blogs];
-      copiedBlogs[index] = returnedBlog;
-      setBlogs(copiedBlogs);
+  const updateLikes = (blogObject, id) => {
+    blogService.update(id, blogObject).then((returnedBlog) => {
+      // const index = blogs.findIndex((blog) => blog.id === returnedBlog.id);
+      // const copiedBlogs = [...blogs];
+      // copiedBlogs[index] = returnedBlog;
+      // setBlogs(copiedBlogs);
+      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)));
     });
   };
 
@@ -100,6 +102,7 @@ const App = () => {
     setBlogs(copiedBlogs);
   };
 
+  const blogFormRef = useRef();
   return (
     <div>
       <h1>Blogs Application</h1>
@@ -111,9 +114,9 @@ const App = () => {
           <LoginForm
             username={username}
             password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleSubmit={handleLogin}
+            setUsername={setUsername}
+            setPassword={setPassword}
+            handleLogin={handleLogin}
           />
         </Togglable>
       ) : (

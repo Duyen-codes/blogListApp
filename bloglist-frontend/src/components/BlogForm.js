@@ -5,7 +5,7 @@ const BlogForm = ({ createBlog, setErrorMessage }) => {
     title: "",
     author: "",
     url: "",
-    likes: "",
+    likes: 0,
   });
 
   const handleBlogChange = (e) => {
@@ -54,7 +54,12 @@ const BlogForm = ({ createBlog, setErrorMessage }) => {
         </div>
         <div>
           likes:
-          <input name="likes" onChange={handleBlogChange} id="likes" />
+          <input
+            type="number"
+            name="likes"
+            onChange={handleBlogChange}
+            id="likes"
+          />
         </div>
         <button type="submit">save</button>
       </form>
