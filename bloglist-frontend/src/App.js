@@ -18,6 +18,7 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
+  // get blogs
   useEffect(() => {
     blogService.getAll().then((blogs) => {
       const sortedBlogs = blogs.sort((a, b) => {
@@ -27,8 +28,9 @@ const App = () => {
     });
   }, []);
 
+  // get user
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
+    const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
@@ -36,6 +38,7 @@ const App = () => {
     }
   }, []);
 
+  // handle login
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
@@ -45,9 +48,10 @@ const App = () => {
       });
       console.log(username, password);
       // user is an object (token, username, name)
-      setUser(user);
       blogService.setToken(user.token);
-      window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
+      setUser(user);
+
+      window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
       setUsername("");
       setPassword("");
       setErrorMessage({ type: "info", content: "Login success" });
@@ -62,12 +66,14 @@ const App = () => {
     }
   };
 
+  // handle logout
   const handleLogout = () => {
-    window.localStorage.removeItem("loggedBlogappUser");
-    blogService.setToken("");
+    window.localStorage.removeItem("loggedBlogAppUser");
+    blogService.setToken(null);
     setUser(null);
   };
 
+  // add blog
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility();
     blogService.create(blogObject).then((returnedBlog) => {
@@ -75,6 +81,7 @@ const App = () => {
     });
   };
 
+  // update likes
   const updateLikes = (id, blogObject) => {
     blogService.update(blogObject, id).then((returnedBlog) => {
       const index = blogs.findIndex((blog) => blog.id === returnedBlog.id);
@@ -84,6 +91,7 @@ const App = () => {
     });
   };
 
+  // handle delete blog
   const handleDeleteBlog = async (blogObject) => {
     await blogService.remove(blogObject.id);
     const index = blogs.findIndex((blog) => blog.id === blogObject.id);
@@ -103,9 +111,9 @@ const App = () => {
           <LoginForm
             username={username}
             password={password}
-            setUsername={setUsername}
-            setPassword={setPassword}
-            handleLogin={handleLogin}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
           />
         </Togglable>
       ) : (
