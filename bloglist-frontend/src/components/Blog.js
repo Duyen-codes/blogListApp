@@ -36,12 +36,13 @@ const Blog = ({ blog, updateLikes, handleDeleteBlog }) => {
     }
   };
 
+  const handleVisibility = () => {
+    setVisible(!visible);
+  };
   return (
     <li style={blogStyle} className="blog">
       <span className="title"> {blog.title} </span>
-      <button onClick={() => setVisible(!visible)}>
-        {visible ? "hide" : "view"}
-      </button>
+      <button onClick={handleVisibility}>{visible ? "hide" : "view"}</button>
       <p className="author">{blog.author}</p>
       {visible && (
         <div>

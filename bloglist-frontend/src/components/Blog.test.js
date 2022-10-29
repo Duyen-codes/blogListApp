@@ -14,29 +14,70 @@ test("renders title and author, not render url or number of likes by default", (
   };
 
   const { container } = render(<Blog blog={blog} />);
+  const element = container.querySelector(".blog");
 
-  expect(container).toHaveTextContent(
+  expect(element).toBeDefined();
+  expect(element).toHaveTextContent(
     "Component testing is done with react-testing-library"
   );
-  expect(container).toHaveTextContent("testing frontend");
-  expect(container).not.toHaveTextContent("testing.fi");
-  expect(container).not.toHaveTextContent("1");
+  expect(element).toHaveTextContent("testing frontend");
+  expect(element).not.toHaveTextContent("testing.fi");
+  expect(element).not.toHaveTextContent("1");
 });
 
 // 5.14
-test("show url and likes when view button is clicked", async () => {
+
+test.only("show url and likes when view button is clicked", async () => {
   const blog = {
     title: "Component testing is done with react-testing-library",
     author: "testing frontend",
     url: "testing.fi",
     likes: 1,
   };
-  const { container } = render(<Blog blog={blog} />);
+  const mockHandler = jest.fn();
+
+  const { container } = render(
+    <Blog blog={blog} handleVisibility={mockHandler} />
+  );
+
+  const element = container.querySelector(".blog");
+  const user = userEvent.setup();
+
+  const button = screen.getByText("view");
+
+  // fireEvent.click(button);
+  await user.click(button);
+
+  expect(screen.getByText("testing.fi")).toBeInTheDocument();
+  expect(screen.getByText("testing.fi")).toBeDefined();
+  expect(element).toHaveTextContent("likes");
+});
+
+test("toggled content can be closed", async () => {
+  const blog = {
+    title: "Component testing is done with react-testing-library",
+    author: "testing frontend",
+    url: "testing.fi",
+    likes: 1,
+  };
+  const mockHandler = jest.fn();
+  const container = render(
+    <Blog blog={blog} handleVisibility={mockHandler} />
+  ).container;
   const user = userEvent.setup();
   const button = screen.getByText("view");
-  fireEvent.click(button);
-  expect(screen.getByText("testing.fi")).toBeInTheDocument();
-  expect(container).toHaveTextContent("likes");
+  await user.click(button);
+
+  const closedButton = screen.getByText("hide");
+  await user.click(closedButton);
+
+  const div = container.querySelector("blog");
+
+  const hiddenEle = screen.queryByText("url: testing.fi, likes: 1", {
+    exact: false,
+  });
+
+  expect(hiddenEle).toBeNull();
 });
 
 // 5.15
@@ -47,35 +88,17 @@ test("like button is called twice", async () => {
     url: "testing.fi",
     likes: 1,
   };
-  const mockHandler = jest.fn();
+  const updateLikes = jest.fn();
 
-  render(<Blog blog={blog} updateLikes={mockHandler} />);
+  render(<Blog blog={blog} updateLikes={updateLikes} />);
 
   const user = userEvent.setup();
   const button = screen.getByText("view");
-  fireEvent.click(button);
+  await user.click(button);
+  // fireEvent.click(button);
   const likeButton = screen.getByText("like");
   await user.click(likeButton);
   await user.click(likeButton);
 
-  expect(mockHandler.mock.calls).toHaveLength(2);
-});
-// 5.16
-test("new blog form created with the right details", async () => {
-  const mockHandler = jest.fn();
-  const blog = {
-    title: "new blog",
-    author: "new blog author",
-    url: "newBlog.fi",
-    likes: 0,
-  };
-  render(<BlogForm blog={blog} createBlog={mockHandler} />);
-
-  const user = userEvent.setup();
-  const newBlogButton = screen.getByText("new blog");
-  fireEvent.click(newBlogButton);
-  const saveButton = screen.getByText("save");
-  await user.click(saveButton);
-
-  expect(mockHandler.mock.calls).toHaveLength(1);
+  expect(updateLikes.mock.calls).toHaveLength(2);
 });

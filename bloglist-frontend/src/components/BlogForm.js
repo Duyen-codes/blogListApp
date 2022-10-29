@@ -5,7 +5,7 @@ const BlogForm = ({ createBlog, setErrorMessage }) => {
     title: "",
     author: "",
     url: "",
-    likes: 0,
+    likes: "",
   });
 
   const handleBlogChange = (e) => {

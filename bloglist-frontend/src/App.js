@@ -96,10 +96,10 @@ const App = () => {
   // handle delete blog
   const handleDeleteBlog = async (blogObject) => {
     await blogService.remove(blogObject.id);
-    const index = blogs.findIndex((blog) => blog.id === blogObject.id);
-    const copiedBlogs = [...blogs];
-    copiedBlogs.splice(index, 1);
-    setBlogs(copiedBlogs);
+    // const index = blogs.findIndex((blog) => blog.id === blogObject.id);
+    // const copiedBlogs = [...blogs];
+    // copiedBlogs.splice(index, 1);
+    setBlogs(blogs.filter((blog) => blog.id !== blogObject.id));
   };
 
   const blogFormRef = useRef();
