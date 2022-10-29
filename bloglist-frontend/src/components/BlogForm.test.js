@@ -6,12 +6,12 @@ import userEvent from "@testing-library/user-event";
 
 // 5.16
 test("<BlogForm /> new blog form created with the right details", async () => {
-  const mockHandler = jest.fn();
+  const createBlog = jest.fn();
   const user = userEvent.setup();
 
   const { container } = render(
     <BlogForm
-      createBlog={mockHandler}
+      createBlog={createBlog}
       setErrorMessage={() => console.log("notification")}
     />
   );
@@ -20,7 +20,6 @@ test("<BlogForm /> new blog form created with the right details", async () => {
   const authorInput = container.querySelector("#author");
   const urlInput = container.querySelector("#url");
 
-  screen.debug();
   const saveButton = screen.getByText("save");
 
   await user.type(titleInput, "testing a form...");
@@ -29,8 +28,8 @@ test("<BlogForm /> new blog form created with the right details", async () => {
 
   await user.click(saveButton);
 
-  expect(mockHandler.mock.calls).toHaveLength(1);
-  expect(mockHandler.mock.calls[0][0].title).toBe("testing a form...");
-  expect(mockHandler.mock.calls[0][0].author).toBe("test blog author");
-  expect(mockHandler.mock.calls[0][0].url).toBe("test blog url");
+  expect(createBlog.mock.calls).toHaveLength(1);
+  expect(createBlog.mock.calls[0][0].title).toBe("testing a form...");
+  expect(createBlog.mock.calls[0][0].author).toBe("test blog author");
+  expect(createBlog.mock.calls[0][0].url).toBe("test blog url");
 });
