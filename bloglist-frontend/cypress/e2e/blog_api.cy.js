@@ -1,83 +1,108 @@
 describe("Blog app", function () {
-  // beforeEach(function () {
-  //   cy.request("POST", "http://localhost:3003/api/testing/reset");
-  //   cy.visit("http://localhost:3000");
-  // });
+  beforeEach(function () {
+    cy.request("POST", "http://localhost:3003/api/testing/reset");
+    const user = {
+      name: "Matti Luukkainen",
+      username: "mluukkai",
+      password: "salainen",
+    };
+    cy.request("POST", "http://localhost:3003/api/users/", user);
+    cy.visit("http://localhost:3000");
+  });
 
   it("front page can be opened", function () {
     cy.visit("http://localhost:3000");
     cy.contains("Blogs Application");
     cy.contains("Blogs");
-    cy.contains("React patterns");
   });
 
-  it("login form can be opened", function () {
+  it("login form is shown", function () {
     cy.contains("login").click();
   });
 
+  it("user can log in", function () {
+    cy.contains("login").click();
+    cy.get("#username").type("mluukkai");
+    cy.get("#password").type("salainen");
+    cy.get("#login-button").click();
+    cy.contains("Login success");
+  });
+
   //   // 5.18 tests for logging in
-  //   describe("Login", function () {
-  //     it("succeeds with correct credentials", function () {
-  //       cy.contains("login").click();
-  //       cy.get("#username").type("hellas");
-  //       cy.get("#password").type("hellas");
-  //       cy.get("#login-button").click();
-  //       cy.contains("Login success");
-  //     });
+  describe("Login", function () {
+    it("succeeds with correct credentials", function () {
+      cy.contains("login").click();
+      cy.get("#username").type("mluukkai");
+      cy.get("#password").type("salainen");
+      cy.get("#login-button").click();
+      cy.contains("Login success");
+    });
 
-  //     it("fails with wrong credentials", function () {
-  //       cy.contains("login").click();
-  //       cy.get("#username").type("hellas");
-  //       cy.get("#password").type("wrong");
-  //       cy.get("#login-button").click();
-  //       cy.get(".notification")
-  //         .should("contain", "Wrong username or password")
-  //         .and("have.css", "color", "rgb(255, 0, 0)")
-  //         .and("have.css", "border-style", "solid");
-  //     });
-  //   });
+    it("fails with wrong credentials", function () {
+      cy.contains("login").click();
+      cy.get("#username").type("mluukkai");
+      cy.get("#password").type("wrong");
+      cy.get("#login-button").click();
+      cy.get(".notification")
+        .should("contain", "Wrong username or password")
+        .and("have.css", "color", "rgb(255, 0, 0)")
+        .and("have.css", "border-style", "solid");
+    });
+  });
+});
+
+// 5.19 logged-in user can create a new blog
+describe("When logged in", function () {
+  beforeEach(function () {
+    // log in user here
+    // cy.login({ username: "mluukkai", password: "salainen" });
+    cy.request("POST", "http://localhost:3003/api/login", {
+      username: "mluukkai",
+      password: "salainen",
+    }).then((response) => {
+      localStorage.setItem("loggedBlogAppUser", JSON.stringify(response.body));
+      cy.visit("http://localhost:3000");
+    });
+  });
+
+  // cy.createBlog({
+  //   title: "first blog",
+  //   author: "first blog author",
+  //   url: "www.firstblog.com",
+  //   likes: 0,
+  // });
+  // cy.createBlog({
+  //   title: "blog2",
+  //   author: "author 2",
+  //   url: "url 2",
+  //   likes: 1,
+  // });
+  // cy.createBlog({
+  //   title: "blog3",
+  //   author: "author 3",
+  //   url: "url 3",
+  //   likes: 2,
   // });
 
-  // 5.19 logged-in user can create a new blog
-  // describe("When logged in", function () {
-  //   beforeEach(function () {
-  //     // log in user here
-  //     cy.login({ username: "hellas", password: "hellas" });
-  //   cy.createBlog({
-  //     title: "first blog",
-  //     author: "first blog author",
-  //     url: "www.firstblog.com",
-  //     likes: 0,
-  //   });
-  //   cy.createBlog({
-  //     title: "blog2",
-  //     author: "author 2",
-  //     url: "url 2",
-  //     likes: 1,
-  //   });
-  //   cy.createBlog({
-  //     title: "blog3",
-  //     author: "author 3",
-  //     url: "url 3",
-  //     likes: 2,
-  //   });
-  // });
+  it("A blog can be created", function () {
+    cy.contains("new blog").click();
+    cy.get("input[name*='title']").type("a blog created by cypress");
+    cy.get("input[name='url']").type("blog url created by cypress");
+    cy.contains("save").click();
 
-  // it("a new blog can be created", function () {
-  //   cy.contains("new blog").click();
-  //   cy.get("input.title").type("a blog created by cypress");
-  //   cy.contains("save").click();
+    cy.get(".notification")
+      .should("contain", "New blog created")
+      .and("have.css", "border-style", "solid");
 
-  //   cy.get(".notification")
-  //     .should("have.css", "color", "green")
-  //     .contains("New blog created");
-  //   cy.contains("a blog created by cypress");
-  // });
+    cy.contains("a blog created by cypress");
+    cy.get("html").should("contain", "Matti Luukkainen logged-in");
+  });
   // // 5.20
-  // it("users can like a blog", function () {
-  //   cy.contains("view").click();
-  //   cy.contains("like").click();
-  // });
+  it.only("Users can like a blog", function () {
+    cy.contains("view").click();
+    // cy.contains("like").click();
+    cy.get("#like-button").click();
+  });
 
   // // 5.21
   // it("user who created a blog can delete it", function () {

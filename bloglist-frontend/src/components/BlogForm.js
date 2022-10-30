@@ -37,6 +37,7 @@ const BlogForm = ({ createBlog, setErrorMessage }) => {
             name="title"
             onChange={handleBlogChange}
             placeholder="write here blog title"
+            required
           />
         </div>
         <div>
@@ -50,7 +51,13 @@ const BlogForm = ({ createBlog, setErrorMessage }) => {
         </div>
         <div>
           url:
-          <input name="url" onChange={handleBlogChange} type="text" id="url" />
+          <input
+            name="url"
+            onChange={handleBlogChange}
+            type="text"
+            id="url"
+            required
+          />
         </div>
         <div>
           likes:
