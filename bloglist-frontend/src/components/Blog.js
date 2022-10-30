@@ -48,7 +48,7 @@ const Blog = ({ blog, updateLikes, handleDeleteBlog }) => {
         <div>
           <p className="url">{blog.url}</p>
           <span>
-            likes
+            likes:
             {blog.likes}
           </span>
           <button onClick={() => handleAddLikes(blog)} id="like-button">

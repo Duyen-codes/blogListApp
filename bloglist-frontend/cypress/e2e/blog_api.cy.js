@@ -70,36 +70,80 @@ describe("When logged in", function () {
     cy.get("html").should("contain", "Matti Luukkainen logged-in");
   });
 
-  describe("and a note exists", function () {
+  describe("and a blog exists", function () {
     beforeEach(function () {
-      cy.contains("new blog").click();
-      cy.get("#title").type("a blog created by cypress");
-      cy.get("#url").type("blog url created by cypress");
-      cy.contains("save").click();
+      cy.createBlog({
+        title: "another blog cypress",
+        author: "cypress",
+        url: "cypress.com",
+        likes: 1,
+      });
     });
 
     // // 5.20
     it("Users can like a blog", function () {
       cy.contains("view").click();
-      // cy.contains("like").click();
+      cy.contains("like");
       cy.get("#like-button").click();
     });
   });
 
-  // // 5.21
-  // it("user who created a blog can delete it", function () {
-  //   cy.contains("first blog").contains("view").click();
-  //   cy.contains("first blog").contains("remove").click();
-  //   cy.get(".blogs").should("not.contain", "first blog");
-  // });
+  describe("and several blog posts exist", function () {
+    beforeEach(function () {
+      cy.createBlog({
+        title: "first blog",
+        author: "first blog author",
+        url: "firstblog.come",
+        likes: 1,
+      });
+      cy.createBlog({
+        title: "second blog",
+        author: "second blog author",
+        url: "secondblog.come",
+        likes: 2,
+      });
+      cy.createBlog({
+        title: "third blog",
+        author: "third blog author",
+        url: "thirdblog.come",
+        likes: 3,
+      });
+    });
 
-  // // bonus exercise: other users cannot delete the blog.
-  // it("other users cannot delete the blog", function () {
-  //   cy.contains("logout").click();
-  //   cy.contains("HTML is easy").contains("view").click();
-  //   cy.contains("HTML is easy").contains("remove").click();
-  //   cy.get(".blogs").should("contain", "HTML is easy");
-  // });
+    it("one of those blogs can be liked", function () {
+      cy.contains("second blog").parent().find("button").click();
+      cy.contains("second blog")
+        .parent()
+        .find("button")
+        .then((buttons) => {
+          console.log("number of buttons", buttons.length);
+          cy.wrap(buttons[1]).click();
+        });
+
+      cy.contains("second blog").parent().contains("likes:3");
+    });
+
+    // // 5.21
+    it("user who created a blog can delete it", function () {
+      cy.contains("a blog created by cypress")
+        .parent()
+        .contains("view")
+        .click();
+      cy.contains("a blog created by cypress")
+        .parent()
+        .contains("remove")
+        .click();
+      cy.get(".blogs").should("not.contain", "a blog created by cypress");
+    });
+
+    // bonus exercise: other users cannot delete the blog.
+    it("other users cannot delete the blog", function () {
+      cy.contains("log out").click();
+      cy.contains("first blog").parent().contains("view").click();
+      cy.contains("first blog").parent().contains("remove").click();
+      cy.get(".blogs").should("contain", "first blog");
+    });
+  });
 
   // // 5.22
   // it("blogs are sorted by most likes", function () {
