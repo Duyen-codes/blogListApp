@@ -55,53 +55,35 @@ describe("Blog app", function () {
 describe("When logged in", function () {
   beforeEach(function () {
     // log in user here
-    // cy.login({ username: "mluukkai", password: "salainen" });
-    cy.request("POST", "http://localhost:3003/api/login", {
-      username: "mluukkai",
-      password: "salainen",
-    }).then((response) => {
-      localStorage.setItem("loggedBlogAppUser", JSON.stringify(response.body));
-      cy.visit("http://localhost:3000");
-    });
+    cy.login({ username: "mluukkai", password: "salainen" });
   });
 
-  // cy.createBlog({
-  //   title: "first blog",
-  //   author: "first blog author",
-  //   url: "www.firstblog.com",
-  //   likes: 0,
-  // });
-  // cy.createBlog({
-  //   title: "blog2",
-  //   author: "author 2",
-  //   url: "url 2",
-  //   likes: 1,
-  // });
-  // cy.createBlog({
-  //   title: "blog3",
-  //   author: "author 3",
-  //   url: "url 3",
-  //   likes: 2,
-  // });
-
-  it("A blog can be created", function () {
+  it("A new blog can be created", function () {
     cy.contains("new blog").click();
     cy.get("input[name*='title']").type("a blog created by cypress");
     cy.get("input[name='url']").type("blog url created by cypress");
     cy.contains("save").click();
-
     cy.get(".notification")
       .should("contain", "New blog created")
       .and("have.css", "border-style", "solid");
-
     cy.contains("a blog created by cypress");
     cy.get("html").should("contain", "Matti Luukkainen logged-in");
   });
-  // // 5.20
-  it.only("Users can like a blog", function () {
-    cy.contains("view").click();
-    // cy.contains("like").click();
-    cy.get("#like-button").click();
+
+  describe("and a note exists", function () {
+    beforeEach(function () {
+      cy.contains("new blog").click();
+      cy.get("#title").type("a blog created by cypress");
+      cy.get("#url").type("blog url created by cypress");
+      cy.contains("save").click();
+    });
+
+    // // 5.20
+    it("Users can like a blog", function () {
+      cy.contains("view").click();
+      // cy.contains("like").click();
+      cy.get("#like-button").click();
+    });
   });
 
   // // 5.21

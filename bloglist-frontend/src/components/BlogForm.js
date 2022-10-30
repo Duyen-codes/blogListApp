@@ -34,6 +34,7 @@ const BlogForm = ({ createBlog, setErrorMessage }) => {
         <div>
           title:
           <input
+            id="title"
             name="title"
             onChange={handleBlogChange}
             placeholder="write here blog title"
