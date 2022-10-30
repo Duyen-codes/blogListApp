@@ -106,7 +106,7 @@ describe("When logged in", function () {
         title: "third blog",
         author: "third blog author",
         url: "thirdblog.come",
-        likes: 3,
+        likes: 4,
       });
     });
 
@@ -137,19 +137,19 @@ describe("When logged in", function () {
     });
 
     // bonus exercise: other users cannot delete the blog.
-    it("other users cannot delete the blog", function () {
-      cy.contains("log out").click();
-      cy.contains("first blog").parent().contains("view").click();
-      cy.contains("first blog").parent().contains("remove").click();
-      cy.get(".blogs").should("contain", "first blog");
+    // it("other users cannot delete the blog", function () {
+    //   cy.contains("log out").click();
+    //   cy.contains("first blog").parent().contains("view").click();
+    //   cy.contains("first blog").parent().contains("remove").click();
+    //   cy.get(".blogs").should("contain", "first blog");
+    // });
+
+    // // 5.22
+    it("blogs are sorted by most likes", function () {
+      cy.get(".blogs").each(function (blog) {
+        cy.get(".blog").contains("view").click();
+      });
+      cy.get(".blog").eq(0).should("contain", "third blog");
     });
   });
-
-  // // 5.22
-  // it("blogs are sorted by most likes", function () {
-  //   cy.get(".blogs").each(function (blog) {
-  //     cy.get(".blog").contains("view").click();
-  //   });
-  //   cy.get(".blog").eq(0).should("contain", "blog3");
-  // });
 });
