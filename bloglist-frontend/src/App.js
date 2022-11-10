@@ -105,7 +105,7 @@ const App = () => {
   const blogFormRef = useRef();
   return (
     <div>
-      <h1>Blogs Application</h1>
+      <h1>Blogs Application MERN stack</h1>
       {errorMessage.content !== "" && (
         <Notification errorMessage={errorMessage} />
       )}
