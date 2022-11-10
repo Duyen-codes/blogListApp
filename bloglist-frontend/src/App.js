@@ -8,14 +8,24 @@ import BlogForm from "./components/BlogForm";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 
+import { useSelector, useDispatch } from "react-redux";
+import {
+  clearNotification,
+  setNotification,
+} from "./reducers/notificationReducer";
+
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [notification, setNotification] = useState(null);
+  // const [notification, setNotification] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
   const byLikes = (blog1, blog2) => (blog2.likes > blog1.likes ? 1 : -1);
+
+  const dispatch = useDispatch();
+  const notification = useSelector((state) => state.notification);
+  console.log("notification", notification);
   // get blogs
   useEffect(() => {
     blogService.getAll().then((blogs) => {
@@ -51,14 +61,21 @@ const App = () => {
       window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
       setUsername("");
       setPassword("");
-      setNotification({ type: "info", message: "Login success" });
+      // setNotification({ type: "info", message: "Login success" });
+      dispatch(setNotification("info", "Login success"));
+
       setTimeout(() => {
-        setNotification(null);
+        dispatch(clearNotification());
       }, 3000);
     } catch (exception) {
-      setNotification({ type: "error", message: "Wrong username or password" });
+      dispatch(
+        setNotification({
+          type: "error",
+          message: "Wrong username or password",
+        })
+      );
       setTimeout(() => {
-        setNotification(null);
+        dispatch(clearNotification());
       }, 3000);
     }
   };

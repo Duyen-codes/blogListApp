@@ -1,6 +1,12 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import {
+  clearNotification,
+  setNotification,
+} from "../reducers/notificationReducer";
 
-const BlogForm = ({ createBlog, setErrorMessage }) => {
+const BlogForm = ({ createBlog, setNotification }) => {
+  const dispatch = useDispatch();
   const [newBlog, setNewBlog] = useState({
     title: "",
     author: "",
@@ -21,9 +27,9 @@ const BlogForm = ({ createBlog, setErrorMessage }) => {
       url: "",
       likes: "",
     });
-    setErrorMessage({ type: "info", content: "New blog created" });
+    dispatch(setNotification("info", "New blog created"));
     setTimeout(() => {
-      setErrorMessage({ type: "", content: "" });
+      dispatch(clearNotification());
     }, 5000);
   };
 
