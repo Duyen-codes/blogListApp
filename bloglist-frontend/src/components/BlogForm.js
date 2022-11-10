@@ -6,7 +6,6 @@ import {
 } from "../reducers/notificationReducer";
 
 const BlogForm = ({ createBlog, setNotification }) => {
-  const dispatch = useDispatch();
   const [newBlog, setNewBlog] = useState({
     title: "",
     author: "",
@@ -20,6 +19,8 @@ const BlogForm = ({ createBlog, setNotification }) => {
 
   const addBlog = (event) => {
     event.preventDefault();
+    // createBlog(newBlog);
+    console.log("newBlog", newBlog);
     createBlog(newBlog);
     setNewBlog({
       title: "",
@@ -27,10 +28,6 @@ const BlogForm = ({ createBlog, setNotification }) => {
       url: "",
       likes: "",
     });
-    dispatch(setNotification("info", "New blog created"));
-    setTimeout(() => {
-      dispatch(clearNotification());
-    }, 5000);
   };
 
   return (

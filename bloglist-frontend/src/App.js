@@ -13,9 +13,10 @@ import {
   clearNotification,
   setNotification,
 } from "./reducers/notificationReducer";
+import { initializeBlogs, setBlogs, createBlog } from "./reducers/blogReducer";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  // const [blogs, setBlogs] = useState([]);
   // const [notification, setNotification] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -25,14 +26,16 @@ const App = () => {
 
   const dispatch = useDispatch();
   const notification = useSelector((state) => state.notification);
-  console.log("notification", notification);
+  const blogs = useSelector((state) => state.blogs);
+
   // get blogs
   useEffect(() => {
-    blogService.getAll().then((blogs) => {
-      // ex 5.9 list blogs by number of likes
-      const sortedBlogs = blogs.sort(byLikes);
-      setBlogs(sortedBlogs);
-    });
+    // blogService.getAll().then((blogs) => {
+    //   // ex 5.9 list blogs by number of likes
+    //   const sortedBlogs = blogs.sort(byLikes);
+    //   setBlogs(sortedBlogs);
+    // });
+    dispatch(initializeBlogs());
   }, []);
 
   // get user
@@ -91,9 +94,15 @@ const App = () => {
   const addBlog = (blogObject) => {
     // hide the form by calling blogFormRef.current.toggleVisibility() after a new note has been created
     blogFormRef.current.toggleVisibility();
-    blogService.create(blogObject).then((returnedBlog) => {
-      setBlogs(blogs.concat(returnedBlog));
-    });
+    // blogService.create(blogObject).then((returnedBlog) => {
+    //   setBlogs(blogs.concat(returnedBlog));
+    // });
+    dispatch(createBlog(blogObject));
+
+    dispatch(setNotification("info", "New blog created"));
+    setTimeout(() => {
+      dispatch(clearNotification());
+    }, 5000);
   };
 
   // update likes
@@ -119,7 +128,7 @@ const App = () => {
     const updatedBlogs = blogs
       .filter((blog) => blog.id !== blogObject.id)
       .sort(byLikes);
-    setBlogs(updatedBlogs);
+    dispatch(setBlogs(updatedBlogs));
   };
 
   const blogFormRef = useRef();
@@ -160,7 +169,7 @@ const App = () => {
             key={blog.id}
             blog={blog}
             blogs={blogs}
-            setBlogs={setBlogs}
+            // setBlogs={setBlogs}
             likeBlog={likeBlog}
             removeBlog={removeBlog}
           />
