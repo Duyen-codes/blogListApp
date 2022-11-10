@@ -1,29 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
-import blogService from "./services/blogs";
-import loginService from "./services/login";
 import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
 
+import blogService from "./services/blogs";
+import loginService from "./services/login";
+
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [errorMessage, setErrorMessage] = useState({
-    type: "",
-    content: "",
-  });
+  const [notification, setNotification] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
+  const byLikes = (blog1, blog2) => (blog2.likes > blog1.likes ? 1 : -1);
   // get blogs
   useEffect(() => {
     blogService.getAll().then((blogs) => {
       // ex 5.9 list blogs by number of likes
-      const sortedBlogs = blogs.sort((a, b) => {
-        return b.likes - a.likes;
-      });
+      const sortedBlogs = blogs.sort(byLikes);
       setBlogs(sortedBlogs);
     });
   }, []);
@@ -46,7 +43,7 @@ const App = () => {
         username,
         password,
       });
-      console.log(username, password);
+
       // user is an object (token, username, name)
       blogService.setToken(user.token);
       setUser(user);
@@ -54,14 +51,14 @@ const App = () => {
       window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
       setUsername("");
       setPassword("");
-      setErrorMessage({ type: "info", content: "Login success" });
+      setNotification({ type: "info", message: "Login success" });
       setTimeout(() => {
-        setErrorMessage({ type: "", content: "" });
+        setNotification(null);
       }, 3000);
     } catch (exception) {
-      setErrorMessage({ type: "error", content: "Wrong username or password" });
+      setNotification({ type: "error", message: "Wrong username or password" });
       setTimeout(() => {
-        setErrorMessage({ type: "", content: "" });
+        setNotification(null);
       }, 3000);
     }
   };
@@ -83,32 +80,36 @@ const App = () => {
   };
 
   // update likes
-  const updateLikes = (blogObject, id) => {
-    blogService.update(id, blogObject).then((returnedBlog) => {
-      // const index = blogs.findIndex((blog) => blog.id === returnedBlog.id);
-      // const copiedBlogs = [...blogs];
-      // copiedBlogs[index] = returnedBlog;
-      // setBlogs(copiedBlogs);
-      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)));
+  const likeBlog = (blogObject) => {
+    const liked = { ...blogObject, likes: blogObject.likes + 1 };
+    blogService.update(liked.id, liked).then((returnedBlog) => {
+      const updatedBlogs = blogs
+        .map((blog) => (blog.id !== blogObject.id ? blog : returnedBlog))
+        .sort(byLikes);
+      setBlogs(updatedBlogs);
     });
   };
 
   // handle delete blog
-  const handleDeleteBlog = async (blogObject) => {
+  const removeBlog = async (blogObject) => {
+    const ok = window.confirm(
+      `remove '${blogObject.title}' by ${blogObject.author}?`
+    );
+    if (!ok) {
+      return;
+    }
     await blogService.remove(blogObject.id);
-    // const index = blogs.findIndex((blog) => blog.id === blogObject.id);
-    // const copiedBlogs = [...blogs];
-    // copiedBlogs.splice(index, 1);
-    setBlogs(blogs.filter((blog) => blog.id !== blogObject.id));
+    const updatedBlogs = blogs
+      .filter((blog) => blog.id !== blogObject.id)
+      .sort(byLikes);
+    setBlogs(updatedBlogs);
   };
 
   const blogFormRef = useRef();
   return (
     <div>
       <h1>Blogs Application MERN stack</h1>
-      {errorMessage.content !== "" && (
-        <Notification errorMessage={errorMessage} />
-      )}
+      {<Notification notification={notification} />}
       {user === null ? (
         <Togglable buttonLabel="login">
           <LoginForm
@@ -128,8 +129,8 @@ const App = () => {
           <Togglable buttonLabel="new blog" ref={blogFormRef}>
             <BlogForm
               createBlog={addBlog}
-              errorMessage={errorMessage}
-              setErrorMessage={setErrorMessage}
+              notification={notification}
+              setNotification={setNotification}
             />
           </Togglable>
         </div>
@@ -143,8 +144,8 @@ const App = () => {
             blog={blog}
             blogs={blogs}
             setBlogs={setBlogs}
-            updateLikes={updateLikes}
-            handleDeleteBlog={handleDeleteBlog}
+            likeBlog={likeBlog}
+            removeBlog={removeBlog}
           />
         ))}
       </div>

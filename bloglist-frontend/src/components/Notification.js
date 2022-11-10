@@ -1,23 +1,22 @@
 import React from "react";
 
-const Notification = ({ errorMessage, setErrorMessage }) => {
-  const notiStyle = {
-    color: "green",
-    padding: "3px",
-    border: "2px solid green",
+const Notification = ({ notification }) => {
+  if (notification === null) {
+    return null;
+  }
+  const style = {
+    color: notification.type === "info" ? "green" : "red",
+    background: "lightgrey",
+    fontSize: 20,
+    borderStyle: "solid",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
   };
 
-  const errorStyle = {
-    color: "red",
-    padding: "3px",
-    border: "2px solid red",
-  };
   return (
-    <div
-      style={errorMessage.type === "info" ? notiStyle : errorStyle}
-      className="notification"
-    >
-      <h2>{errorMessage.content}</h2>
+    <div id="notification" style={style} className="notification">
+      {notification.message}
     </div>
   );
 };
