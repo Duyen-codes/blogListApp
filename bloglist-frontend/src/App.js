@@ -13,7 +13,14 @@ import {
   clearNotification,
   setNotification,
 } from "./reducers/notificationReducer";
-import { initializeBlogs, setBlogs, createBlog } from "./reducers/blogReducer";
+import {
+  initializeBlogs,
+  setBlogs,
+  createBlog,
+  addLike,
+  removeBlog,
+  deleteBlog,
+} from "./reducers/blogReducer";
 
 const App = () => {
   // const [blogs, setBlogs] = useState([]);
@@ -105,18 +112,19 @@ const App = () => {
     }, 5000);
   };
 
-  // update likes
+  // like blog
   const likeBlog = (blogObject) => {
     const liked = { ...blogObject, likes: blogObject.likes + 1 };
-    blogService.update(liked.id, liked).then((returnedBlog) => {
-      const updatedBlogs = blogs
-        .map((blog) => (blog.id !== blogObject.id ? blog : returnedBlog))
-        .sort(byLikes);
-      setBlogs(updatedBlogs);
-    });
+    // blogService.update(liked.id, liked).then((returnedBlog) => {
+    //   const updatedBlogs = blogs
+    //     .map((blog) => (blog.id !== blogObject.id ? blog : returnedBlog))
+    //     .sort(byLikes);
+    //   setBlogs(updatedBlogs);
+    // });
+    dispatch(addLike(liked));
   };
 
-  // handle delete blog
+  //  remove blog
   const removeBlog = async (blogObject) => {
     const ok = window.confirm(
       `remove '${blogObject.title}' by ${blogObject.author}?`
@@ -124,11 +132,12 @@ const App = () => {
     if (!ok) {
       return;
     }
-    await blogService.remove(blogObject.id);
-    const updatedBlogs = blogs
-      .filter((blog) => blog.id !== blogObject.id)
-      .sort(byLikes);
-    dispatch(setBlogs(updatedBlogs));
+    // await blogService.remove(blogObject.id);
+    // const updatedBlogs = blogs
+    //   .filter((blog) => blog.id !== blogObject.id)
+    //   .sort(byLikes);
+    // dispatch(setBlogs(updatedBlogs));
+    dispatch(deleteBlog(blogObject.id));
   };
 
   const blogFormRef = useRef();
