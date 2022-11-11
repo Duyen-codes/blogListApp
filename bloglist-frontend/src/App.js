@@ -22,9 +22,11 @@ import {
 
 import { initializeLoggedInUser, logout, login } from "./reducers/loginReducer";
 
-import { Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link, useMatch } from 'react-router-dom'
 import Users from "./components/Users";
 import User from "./components/User";
+
+import BlogSingle from "./components/BlogSingle";
 
 const App = () => {
   // const [blogs, setBlogs] = useState([]);
@@ -149,6 +151,14 @@ const App = () => {
   };
 
   const blogFormRef = useRef();
+
+  const match = useMatch('/blogs/:id')
+ 
+  const blog = match ? useSelector(state => state.blogs.find(blog => {
+    return blog.id ===(match.params.id)
+  })) : null
+  console.log('blog', blog);
+
   return (
   
     <div>
@@ -188,6 +198,8 @@ const App = () => {
       <Routes>
         <Route path="/users" element={<Users />}> </Route>
         <Route path="/users/:id" element={<User />}></Route>
+        <Route path="/blogs/:id" element={<BlogSingle blog={ blog}  likeBlog={likeBlog}
+            removeBlog={removeBlog} />}></Route>
       </Routes>
         
         <h2>Blogs</h2>
