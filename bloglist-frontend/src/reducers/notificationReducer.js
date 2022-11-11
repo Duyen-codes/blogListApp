@@ -5,7 +5,7 @@ const notificationSlice = createSlice({
   initialState: null,
   reducers: {
     showNotification(state, action) {
-      console.log(action);
+      console.log("action.payload", action.payload);
       return action.payload;
     },
 
@@ -16,8 +16,8 @@ const notificationSlice = createSlice({
 });
 
 export const setNotification = (type, message) => {
+  console.log("type", type, "message", message);
   return (dispatch) => {
-    console.log("type", type, "message", message);
     dispatch(showNotification({ type, message }));
   };
 };

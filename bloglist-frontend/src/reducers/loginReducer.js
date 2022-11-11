@@ -16,10 +16,14 @@ const loginSlice = createSlice({
 export const login = (username, password) => {
   console.log("username", username, password);
   return async (dispatch) => {
-    const user = await loginService.login({ username, password });
-    window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
-    blogService.setToken(user.token);
-    dispatch(setUser(user));
+    try {
+      const user = await loginService.login({ username, password });
+      window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
+      blogService.setToken(user.token);
+      dispatch(setUser(user));
+    } catch (exception) {
+      return null;
+    }
   };
 };
 

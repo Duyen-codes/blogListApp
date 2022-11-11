@@ -1,6 +1,8 @@
 import React from "react";
+import { Alert } from "@mui/material";
 
 const Notification = ({ notification }) => {
+  console.log("notification", notification);
   if (notification === null) {
     return null;
   }
@@ -16,7 +18,11 @@ const Notification = ({ notification }) => {
 
   return (
     <div id="notification" style={style} className="notification">
-      {notification.message}
+      {notification.message && (
+        <Alert severity={notification.type === "info" ? "success" : "error"}>
+          {notification.message}
+        </Alert>
+      )}
     </div>
   );
 };

@@ -5,8 +5,8 @@ import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
 
-import blogService from "./services/blogs";
-import loginService from "./services/login";
+// import blogService from "./services/blogs";
+// import loginService from "./services/login";
 
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -22,13 +22,16 @@ import {
 
 import { initializeLoggedInUser, logout, login } from "./reducers/loginReducer";
 
-import { Routes, Route, Link, useMatch } from 'react-router-dom'
+import { Routes, Route, Link, useMatch, useNavigate } from "react-router-dom";
 import Users from "./components/Users";
 import User from "./components/User";
 
 import BlogSingle from "./components/BlogSingle";
 import Blogs from "./components/Blogs";
 import Home from "./components/Home";
+
+import { Container } from "@mui/material";
+import Navigation from "./components/Navigation";
 
 const App = () => {
   // const [blogs, setBlogs] = useState([]);
@@ -44,6 +47,7 @@ const App = () => {
   const blogs = useSelector((state) => state.blogs);
   const user = useSelector((state) => state.loggedInUser);
 
+  const navigate = useNavigate();
   // get blogs
   useEffect(() => {
     // blogService.getAll().then((blogs) => {
@@ -84,17 +88,12 @@ const App = () => {
       setPassword("");
       // setNotification({ type: "info", message: "Login success" });
       dispatch(setNotification("info", "Login success"));
-
+      navigate("/");
       setTimeout(() => {
         dispatch(clearNotification());
       }, 3000);
     } catch (exception) {
-      dispatch(
-        setNotification({
-          type: "error",
-          message: "Wrong username or password",
-        })
-      );
+      dispatch(setNotification("error", "Wrong username or password"));
       setTimeout(() => {
         dispatch(clearNotification());
       }, 3000);
@@ -155,24 +154,18 @@ const App = () => {
   const blogFormRef = useRef();
 
   // const match = useMatch('/blogs/:id')
- 
+
   // const blog = match ? useSelector(state => state.blogs.find(blog => {
   //   return blog.id === (match.params.id)
   // })) : null
   // console.log('blog', blog);
 
   return (
-    <div>
-      <nav>
-        <Link to="/">home</Link>
-        <Link to="/users" element={<Users />}>users</Link>
-        <Link to="/blogs">blogs</Link>
-        {user ? <><em>{user.name} logged in</em> <button onClick={() => dispatch(logout())}>logout</button></> : <Link to="/login">login</Link>}
-      </nav>
-
+    <Container>
+      <Navigation user={user} />
       <h1>Blogs Application MERN stack</h1>
       {<Notification notification={notification} />}
-      {user === null ? (
+      {/* {user === null && (
         <Togglable buttonLabel="login">
           <LoginForm
             username={username}
@@ -182,7 +175,8 @@ const App = () => {
             handleLogin={handleLogin}
           />
         </Togglable>
-      ) : (
+      )} */}
+      {user !== null && (
         <div>
           <p>
             {user.name} logged-in
@@ -200,15 +194,29 @@ const App = () => {
 
       <Routes>
         <Route path="/" element={<Home />}></Route>
-        <Route path="/users" element={<Users />}> </Route>
-        <Route path="/blogs" element={<Blogs blogs={ blogs} />}></Route>
+        <Route path="/users" element={<Users />}>
+          {" "}
+        </Route>
+        <Route path="/blogs" element={<Blogs blogs={blogs} />}></Route>
         <Route path="/users/:id" element={<User />}></Route>
-        <Route path="/blogs/:id" element={<BlogSingle  likeBlog={likeBlog}
-          removeBlog={removeBlog} />}></Route>
-        <Route path="/login" element={<LoginForm handleLogin={handleLogin} username={username} password={password} setUsername={setUsername} setPassword={setPassword} />}></Route>
+        <Route
+          path="/blogs/:id"
+          element={<BlogSingle likeBlog={likeBlog} removeBlog={removeBlog} />}
+        ></Route>
+        <Route
+          path="/login"
+          element={
+            <LoginForm
+              handleLogin={handleLogin}
+              username={username}
+              password={password}
+              setUsername={setUsername}
+              setPassword={setPassword}
+            />
+          }
+        ></Route>
       </Routes>
-      </div>
-      
+    </Container>
   );
 };
 
