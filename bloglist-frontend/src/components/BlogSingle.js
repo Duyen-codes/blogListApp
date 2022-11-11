@@ -10,6 +10,7 @@ const BlogSingle = ({ likeBlog, removeBlog }) => {
       return blog.id === id;
     })
   );
+  console.log(blog);
   if (!blog) {
     return null;
   }
@@ -25,6 +26,9 @@ const BlogSingle = ({ likeBlog, removeBlog }) => {
         <p>added by {blog.user.name}</p>
       </div>
       <h3>Comments</h3>
+      {blog.comments.map((comment) => {
+        return <li key={comment.id}>{comment.content}</li>;
+      })}
     </div>
   );
 };

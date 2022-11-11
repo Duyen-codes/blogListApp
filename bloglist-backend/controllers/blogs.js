@@ -6,15 +6,14 @@ const logger = require("../utils/logger");
 const Comment = require("../models/comment");
 
 blogsRouter.get("/", async (request, response) => {
-  const blogs = await Blog.find({}).populate("user", {
-    username: 1,
-    name: 1,
-    id: 1,
-  });
+  const blogs = await Blog.find({})
+    .populate("user", {
+      username: 1,
+      name: 1,
+      id: 1,
+    })
+    .populate("comments", { content: 1 });
   response.json(blogs);
-  // Blog.find({}).then((blogs) => {
-  //   response.json(blogs);
-  // });
 });
 
 blogsRouter.get("/:id", async (request, response, next) => {
@@ -125,8 +124,9 @@ blogsRouter.put(
 // comments
 blogsRouter.post("/:id/comments", async (request, response) => {
   const body = request.body;
-  console.log("body.content", body.content);
+
   const blog = await Blog.findById(request.params.id);
+  console.log("blog", blog);
 
   const comment = new Comment({
     content: body.content,

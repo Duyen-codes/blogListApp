@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const commentSchema = new mongoose.Schema({
+const commentSchema = mongoose.Schema({
   content: String,
   blog: {
     type: mongoose.Schema.Types.ObjectId,
@@ -17,4 +17,5 @@ commentSchema.set("toJSON", {
 });
 
 const Comment = mongoose.model("Comment", commentSchema);
+
 module.exports = Comment;

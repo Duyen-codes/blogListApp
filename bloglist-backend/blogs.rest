@@ -6,7 +6,7 @@ POST http://localhost:3003/api/blogs/636d250b672b6934c3975b02/comments
 Content-Type: application/json
 
 {
-    "content": "awesome article"
+    "content": "a must read for every developer"
 }
 
 ###
