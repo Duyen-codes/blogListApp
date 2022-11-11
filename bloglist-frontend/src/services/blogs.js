@@ -1,5 +1,6 @@
 import axios from "axios";
 const baseUrl = "/api/blogs";
+import userService from "./users";
 
 let token = null;
 const setToken = (newToken) => {

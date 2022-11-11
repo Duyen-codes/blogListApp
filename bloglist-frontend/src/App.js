@@ -22,18 +22,21 @@ import {
   deleteBlog,
 } from "./reducers/blogReducer";
 
+import { initializeLoggedInUser, logout, login } from "./reducers/loginReducer";
+
 const App = () => {
   // const [blogs, setBlogs] = useState([]);
   // const [notification, setNotification] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
 
-  const byLikes = (blog1, blog2) => (blog2.likes > blog1.likes ? 1 : -1);
+  // const byLikes = (blog1, blog2) => (blog2.likes > blog1.likes ? 1 : -1);
 
   const dispatch = useDispatch();
   const notification = useSelector((state) => state.notification);
   const blogs = useSelector((state) => state.blogs);
+  const user = useSelector((state) => state.loggedInUser);
 
   // get blogs
   useEffect(() => {
@@ -47,28 +50,30 @@ const App = () => {
 
   // get user
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
-    }
+    // const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
+    // if (loggedUserJSON) {
+    //   const user = JSON.parse(loggedUserJSON);
+    //   dispatch(setUser(user));
+    //   blogService.setToken(user.token);
+    // }
+    dispatch(initializeLoggedInUser());
   }, []);
 
   // handle login
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const user = await loginService.login({
-        username,
-        password,
-      });
+      // const user = await loginService.login({
+      //   username,
+      //   password,
+      // });
 
-      // user is an object (token, username, name)
-      blogService.setToken(user.token);
-      setUser(user);
+      // // user is an object (token, username, name)
+      // blogService.setToken(user.token);
+      // setUser(user);
 
-      window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
+      // window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
+      dispatch(login(username, password));
       setUsername("");
       setPassword("");
       // setNotification({ type: "info", message: "Login success" });
@@ -92,9 +97,10 @@ const App = () => {
 
   // handle logout
   const handleLogout = () => {
-    window.localStorage.removeItem("loggedBlogAppUser");
-    blogService.setToken(null);
-    setUser(null);
+    // window.localStorage.removeItem("loggedBlogAppUser");
+    // blogService.setToken(null);
+    // setUser(null);
+    dispatch(logout());
   };
 
   // add blog
