@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Blog = ({ blog, likeBlog, removeBlog }) => {
-  console.log("blog", blog);
   const [visible, setVisible] = useState(false);
 
   const blogStyle = {
@@ -16,6 +15,9 @@ const Blog = ({ blog, likeBlog, removeBlog }) => {
   const handleVisibility = () => {
     setVisible(!visible);
   };
+  if (!blog) {
+    return null;
+  }
   return (
     <li style={blogStyle} className="blog">
       <Link className="title" to={`/blogs/${blog.id}`}>

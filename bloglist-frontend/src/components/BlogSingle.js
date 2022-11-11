@@ -1,6 +1,15 @@
 import React from "react";
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-const BlogSingle = ({ blog, likeBlog, removeBlog }) => {
+const BlogSingle = ({ likeBlog, removeBlog }) => {
+  const { id } = useParams();
+
+  const blog = useSelector((state) =>
+    state.blogs.find((blog) => {
+      return blog.id === id;
+    })
+  );
   if (!blog) {
     return null;
   }

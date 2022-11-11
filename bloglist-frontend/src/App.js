@@ -27,6 +27,8 @@ import Users from "./components/Users";
 import User from "./components/User";
 
 import BlogSingle from "./components/BlogSingle";
+import Blogs from "./components/Blogs";
+import Home from "./components/Home";
 
 const App = () => {
   // const [blogs, setBlogs] = useState([]);
@@ -152,21 +154,22 @@ const App = () => {
 
   const blogFormRef = useRef();
 
-  const match = useMatch('/blogs/:id')
+  // const match = useMatch('/blogs/:id')
  
-  const blog = match ? useSelector(state => state.blogs.find(blog => {
-    return blog.id ===(match.params.id)
-  })) : null
-  console.log('blog', blog);
+  // const blog = match ? useSelector(state => state.blogs.find(blog => {
+  //   return blog.id === (match.params.id)
+  // })) : null
+  // console.log('blog', blog);
 
   return (
-  
     <div>
       <nav>
-        <li>
-<Link to="/users" element={<Users />}>users</Link>
-        </li>
+        <Link to="/">home</Link>
+        <Link to="/users" element={<Users />}>users</Link>
+        <Link to="/blogs">blogs</Link>
+        {user ? <><em>{user.name} logged in</em> <button onClick={() => dispatch(logout())}>logout</button></> : <Link to="/login">login</Link>}
       </nav>
+
       <h1>Blogs Application MERN stack</h1>
       {<Notification notification={notification} />}
       {user === null ? (
@@ -196,25 +199,14 @@ const App = () => {
       )}
 
       <Routes>
+        <Route path="/" element={<Home />}></Route>
         <Route path="/users" element={<Users />}> </Route>
+        <Route path="/blogs" element={<Blogs blogs={ blogs} />}></Route>
         <Route path="/users/:id" element={<User />}></Route>
-        <Route path="/blogs/:id" element={<BlogSingle blog={ blog}  likeBlog={likeBlog}
-            removeBlog={removeBlog} />}></Route>
+        <Route path="/blogs/:id" element={<BlogSingle  likeBlog={likeBlog}
+          removeBlog={removeBlog} />}></Route>
+        <Route path="/login" element={<LoginForm handleLogin={handleLogin} username={username} password={password} setUsername={setUsername} setPassword={setPassword} />}></Route>
       </Routes>
-        
-        <h2>Blogs</h2>
-      <div className="blogs">
-        {blogs.map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            blogs={blogs}
-            likeBlog={likeBlog}
-            removeBlog={removeBlog}
-          />
-        ))}
-      </div>
-       
       </div>
       
   );
