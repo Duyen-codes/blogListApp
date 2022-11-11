@@ -15,14 +15,16 @@ import {
 } from "./reducers/notificationReducer";
 import {
   initializeBlogs,
-  setBlogs,
   createBlog,
   addLike,
-  removeBlog,
   deleteBlog,
 } from "./reducers/blogReducer";
 
 import { initializeLoggedInUser, logout, login } from "./reducers/loginReducer";
+
+import { Routes, Route, Link } from 'react-router-dom'
+import Users from "./components/Users";
+import User from "./components/User";
 
 const App = () => {
   // const [blogs, setBlogs] = useState([]);
@@ -148,7 +150,13 @@ const App = () => {
 
   const blogFormRef = useRef();
   return (
+  
     <div>
+      <nav>
+        <li>
+<Link to="/users" element={<Users />}>users</Link>
+        </li>
+      </nav>
       <h1>Blogs Application MERN stack</h1>
       {<Notification notification={notification} />}
       {user === null ? (
@@ -177,20 +185,26 @@ const App = () => {
         </div>
       )}
 
-      <h2>Blogs</h2>
+      <Routes>
+        <Route path="/users" element={<Users />}> </Route>
+        <Route path="/users/:id" element={<User />}></Route>
+      </Routes>
+        
+        <h2>Blogs</h2>
       <div className="blogs">
         {blogs.map((blog) => (
           <Blog
             key={blog.id}
             blog={blog}
             blogs={blogs}
-            // setBlogs={setBlogs}
             likeBlog={likeBlog}
             removeBlog={removeBlog}
           />
         ))}
       </div>
-    </div>
+       
+      </div>
+      
   );
 };
 

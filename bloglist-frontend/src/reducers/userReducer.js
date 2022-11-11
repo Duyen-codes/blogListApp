@@ -4,15 +4,19 @@ import userService from "../services/users";
 const userSlice = createSlice({
   name: "user",
   initialState: [],
-  reducers: {},
+  reducers: {
+    setUsers(state, action) {
+      return action.payload;
+    },
+  },
 });
 
 export const initializeUsers = () => {
   return async (dispatch) => {
     const users = await userService.getAll();
-    console.log("users", users);
+    dispatch(setUsers(users));
   };
 };
 
-export const { setUser } = userSlice.actions;
+export const { setUsers } = userSlice.actions;
 export default userSlice.reducer;
