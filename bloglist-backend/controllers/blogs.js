@@ -3,6 +3,8 @@ const Blog = require("../models/blog");
 const middleware = require("../utils/middleware");
 const logger = require("../utils/logger");
 
+const Comment = require("../models/comment");
+
 blogsRouter.get("/", async (request, response) => {
   const blogs = await Blog.find({}).populate("user", {
     username: 1,
@@ -119,5 +121,20 @@ blogsRouter.put(
     }
   }
 );
+
+// comments
+blogsRouter.post("/:id/comments", async (request, response) => {
+  const body = request.body;
+  const blog = await Blog.findById(request.params.id);
+
+  const comment = new Comment({
+    content: body.content,
+    blog: blog._id,
+  });
+  const savedComment = await comment.save();
+  blog.comments = blog.comments.concat(savedComment._id);
+  await blog.save();
+  response.status(201).json(savedComment);
+});
 
 module.exports = blogsRouter;

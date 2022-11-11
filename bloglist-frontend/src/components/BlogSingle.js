@@ -24,6 +24,7 @@ const BlogSingle = ({ likeBlog, removeBlog }) => {
         </button>
         <p>added by {blog.user.name}</p>
       </div>
+      <h3>Comments</h3>
     </div>
   );
 };
