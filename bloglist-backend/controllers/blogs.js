@@ -126,12 +126,12 @@ blogsRouter.post("/:id/comments", async (request, response) => {
   const body = request.body;
 
   const blog = await Blog.findById(request.params.id);
-  console.log("blog", blog);
 
   const comment = new Comment({
     content: body.content,
     blog: blog._id,
   });
+
   const savedComment = await comment.save();
   blog.comments = blog.comments.concat(savedComment._id);
   await blog.save();
