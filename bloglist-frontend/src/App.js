@@ -20,7 +20,11 @@ import {
   deleteBlog,
 } from "./reducers/blogReducer";
 
-import { initializeLoggedInUser, logout, login } from "./reducers/loginReducer";
+import {
+  initializeLoggedInUser,
+  logout,
+  setUser,
+} from "./reducers/loginReducer";
 
 import { Routes, Route, Link, useMatch, useNavigate } from "react-router-dom";
 import Users from "./components/Users";
@@ -28,7 +32,9 @@ import User from "./components/User";
 
 import BlogSingle from "./components/BlogSingle";
 import Blogs from "./components/Blogs";
-import Home from "./components/Home";
+
+import loginService from "./services/login";
+import blogService from "./services/blogs";
 
 import { Container } from "@mui/material";
 import Navigation from "./components/Navigation";
@@ -72,32 +78,53 @@ const App = () => {
   // handle login
   const handleLogin = async (event) => {
     event.preventDefault();
-    try {
-      // const user = await loginService.login({
-      //   username,
-      //   password,
-      // });
+    loginService
+      .login({
+        username,
+        password,
+      })
+      .then((user) => {
+        blogService.setToken(user.token);
+        dispatch(setUser(user));
+        window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
+        dispatch(setNotification("info", "Login success"));
+        navigate("/");
+        setTimeout(() => {
+          dispatch(clearNotification());
+        }, 3000);
+      })
+      .catch(() => {
+        dispatch(setNotification("error", "Wrong username or password"));
+        setTimeout(() => {
+          dispatch(clearNotification());
+        }, 3000);
+      });
+    // try {
+    // const user = await loginService.login({
+    //   username,
+    //   password,
+    // });
 
-      // // user is an object (token, username, name)
-      // blogService.setToken(user.token);
-      // setUser(user);
+    // // user is an object (token, username, name)
+    // blogService.setToken(user.token);
+    // setUser(user);
 
-      // window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
-      dispatch(login(username, password));
-      setUsername("");
-      setPassword("");
-      // setNotification({ type: "info", message: "Login success" });
-      dispatch(setNotification("info", "Login success"));
-      navigate("/");
-      setTimeout(() => {
-        dispatch(clearNotification());
-      }, 3000);
-    } catch (exception) {
-      dispatch(setNotification("error", "Wrong username or password"));
-      setTimeout(() => {
-        dispatch(clearNotification());
-      }, 3000);
-    }
+    // window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
+    //   dispatch(login(username, password));
+    //   setUsername("");
+    //   setPassword("");
+    //   // setNotification({ type: "info", message: "Login success" });
+    //   dispatch(setNotification("info", "Login success"));
+    //   navigate("/");
+    //   setTimeout(() => {
+    //     dispatch(clearNotification());
+    //   }, 3000);
+    // } catch (exception) {
+    //   dispatch(setNotification("error", "Wrong username or password"));
+    //   setTimeout(() => {
+    //     dispatch(clearNotification());
+    //   }, 3000);
+    // }
   };
 
   // handle logout
@@ -106,6 +133,7 @@ const App = () => {
     // blogService.setToken(null);
     // setUser(null);
     dispatch(logout());
+    navigate("/");
   };
 
   // add blog
@@ -193,14 +221,14 @@ const App = () => {
       )}
 
       <Routes>
-        <Route path="/" element={<Home />}></Route>
-        <Route path="/users" element={<Users />}>
-          {" "}
-        </Route>
         <Route
-          path="/blogs"
-          element={<Blogs blogs={blogs} likeBlog={likeBlog} />}
-        ></Route>
+          path="/"
+          element={
+            <Blogs blogs={blogs} likeBlog={likeBlog} removeBlog={removeBlog} />
+          }
+        />
+        <Route path="/users" element={<Users />} />
+
         <Route path="/users/:id" element={<User />}></Route>
         <Route
           path="/blogs/:id"

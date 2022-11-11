@@ -18,7 +18,7 @@ const BlogSingle = ({ likeBlog }) => {
     event.preventDefault();
     const comment = { content }
     dispatch(addComment(id, comment))
-   
+    setContent('')
   }
 
   if (!blog) {

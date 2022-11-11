@@ -11,16 +11,11 @@ const Navigation = ({ user }) => {
     <AppBar position="static">
       <Toolbar>
         <IconButton edge="start" color="inherit" aria-label="menu"></IconButton>
-
         <Button color="inherit" component={Link} to="/">
-          home
+          blogs
         </Button>
-
         <Button color="inherit" component={Link} to="/users">
           users
-        </Button>
-        <Button color="inherit" component={Link} to="/blogs">
-          blogs
         </Button>
         <Button color="inherit">
           {user ? (
