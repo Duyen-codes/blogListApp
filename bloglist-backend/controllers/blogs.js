@@ -125,6 +125,7 @@ blogsRouter.put(
 // comments
 blogsRouter.post("/:id/comments", async (request, response) => {
   const body = request.body;
+  console.log("body.content", body.content);
   const blog = await Blog.findById(request.params.id);
 
   const comment = new Comment({

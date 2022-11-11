@@ -1,6 +1,15 @@
 GET http://localhost:3003/api/blogs HTTP/1.1
 
 ###
+
+POST http://localhost:3003/api/blogs/636d250b672b6934c3975b02/comments
+Content-Type: application/json
+
+{
+    "content": "awesome article"
+}
+
+###
 POST http://localhost:3003/api/blogs HTTP/1.1
 Content-Type: application/json
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjYzNGZlMDE4NTQ1MzJlYTliY2FhZmIyYiIsImlhdCI6MTY2NjI2NjQ1NSwiZXhwIjoxNjY2MzUyODU1fQ.liUF5fh1eJHoXMUlkMNUi980_dnD9xksd7eCAbXeKpA
