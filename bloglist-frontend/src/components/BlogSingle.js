@@ -17,7 +17,6 @@ const BlogSingle = ({ likeBlog }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     const comment = { content }
-    console.log('comment', comment);
     dispatch(addComment(id, comment))
    
   }
