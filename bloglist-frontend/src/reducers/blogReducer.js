@@ -7,12 +7,12 @@ const blogSlice = createSlice({
   name: "blogs",
   initialState: [],
   reducers: {
-    setBlogs(state, action) {
-      return action.payload.sort(byLikes);
+    setBlogs(state, { payload }) {
+      return payload.sort(byLikes);
     },
 
-    appendBlog(state, action) {
-      state.push(action.payload);
+    appendBlog(state, { payload }) {
+      state.concat(payload).sort(byLikes);
     },
 
     likeBlog(state, action) {
@@ -29,14 +29,15 @@ const blogSlice = createSlice({
     },
 
     commentBlog(state, action) {
-      console.log(action.payload);
       const blogId = action.payload.blog;
       const blogToChange = state.find((blog) => blog.id === blogId);
       const changedBlog = {
         ...blogToChange,
         comments: [...blogToChange.comments, action.payload],
       };
-      return state.map((blog) => (blog.id !== blogId ? blog : changedBlog));
+      return state
+        .map((blog) => (blog.id !== blogId ? blog : changedBlog))
+        .sort(byLikes);
     },
   },
 });
