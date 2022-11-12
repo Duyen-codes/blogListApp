@@ -1,18 +1,52 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { TextField, Button } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { setUser } from "../reducers/loginReducer";
+import {
+  setNotification,
+  clearNotification,
+} from "../reducers/notificationReducer";
+import loginService from "../services/login";
+import blogService from "../services/blogs";
 
-const LoginForm = ({
-  username,
-  setUsername,
-  password,
-  setPassword,
-  handleLogin,
-}) => {
+const LoginForm = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // handle login
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    loginService
+      .login({
+        username,
+        password,
+      })
+      .then((user) => {
+        blogService.setToken(user.token);
+        dispatch(setUser(user));
+        window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
+        dispatch(setNotification("info", "Login success"));
+        navigate("/");
+        setTimeout(() => {
+          dispatch(clearNotification());
+        }, 3000);
+      })
+      .catch(() => {
+        dispatch(setNotification("error", "Wrong username or password"));
+        setTimeout(() => {
+          dispatch(clearNotification());
+        }, 3000);
+      });
+  };
   return (
     <div>
       <h2>Log in</h2>
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleSubmit}>
         <div>
           <TextField
             label="username"
@@ -49,11 +83,3 @@ const LoginForm = ({
 };
 
 export default LoginForm;
-
-LoginForm.propTypes = {
-  handleLogin: PropTypes.func.isRequired,
-  setPassword: PropTypes.func.isRequired,
-  setUsername: PropTypes.func.isRequired,
-  username: PropTypes.string.isRequired,
-  password: PropTypes.string.isRequired,
-};

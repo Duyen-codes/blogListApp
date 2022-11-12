@@ -1,12 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Users from "./Users";
 import { logout } from "../reducers/loginReducer";
 import { AppBar, Toolbar, IconButton, Button } from "@mui/material";
 
-const Navigation = ({ user }) => {
+const Navigation = () => {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
   return (
     <AppBar position="static">
       <Toolbar>
@@ -17,18 +18,19 @@ const Navigation = ({ user }) => {
         <Button color="inherit" component={Link} to="/users">
           users
         </Button>
-        <Button color="inherit">
-          {user ? (
-            <>
-              <em>{user.name} logged in</em>{" "}
-              <em onClick={() => dispatch(logout())}>logout</em>
-            </>
-          ) : (
-            <Button color="inherit" component={Link} to="/login">
-              login
+
+        {user ? (
+          <>
+            <Button color="inherit">{user.name} logged in</Button>
+            <Button color="inherit" onClick={() => dispatch(logout())}>
+              logout
             </Button>
-          )}
-        </Button>
+          </>
+        ) : (
+          <Button color="inherit" component={Link} to="/login">
+            login
+          </Button>
+        )}
       </Toolbar>
     </AppBar>
   );

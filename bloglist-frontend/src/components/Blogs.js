@@ -1,22 +1,19 @@
 import React from "react";
-import Blog from "./Blog";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
-const Blogs = ({ blogs, likeBlog, removeBlog }) => {
-  if (!blogs) {
-    return null;
-  }
+const Blogs = () => {
+  const blogs = useSelector((state) => state.blogs);
   return (
     <div>
       <h2>Blogs</h2>
-      <div className="blogs">
+      <div className="blogs" id="blogs">
         {blogs.map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            blogs={blogs}
-            likeBlog={likeBlog}
-            removeBlog={removeBlog}
-          />
+          <div key={blog.id}>
+            <Link to={`/blogs/${blog.id}`}>
+              {blog.title} by {blog.author}
+            </Link>
+          </div>
         ))}
       </div>
     </div>
@@ -24,3 +21,13 @@ const Blogs = ({ blogs, likeBlog, removeBlog }) => {
 };
 
 export default Blogs;
+
+{
+  /* <Blog
+            key={blog.id}
+            blog={blog}
+            blogs={blogs}
+            likeBlog={likeBlog}
+            removeBlog={removeBlog}
+          /> */
+}

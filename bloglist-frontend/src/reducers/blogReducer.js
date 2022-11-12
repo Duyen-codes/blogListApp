@@ -12,7 +12,7 @@ const blogSlice = createSlice({
     },
 
     appendBlog(state, { payload }) {
-      state.concat(payload).sort(byLikes);
+      return state.concat(payload).sort(byLikes);
     },
 
     likeBlog(state, action) {

@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import blogService from "../services/blogs";
 
 const loginSlice = createSlice({
-  name: "loggedInUser",
+  name: "user",
   initialState: null,
   reducers: {
     setUser(state, action) {

@@ -1,39 +1,54 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { createBlog } from "../reducers/blogReducer";
+import { setNotification } from "../reducers/notificationReducer";
 
-const BlogForm = ({ createBlog }) => {
+const BlogForm = ({ blogFormRef }) => {
   const [newBlog, setNewBlog] = useState({
     title: "",
     author: "",
     url: "",
-    likes: "",
+    likes: 0,
   });
 
   const handleBlogChange = (e) => {
     setNewBlog({ ...newBlog, [e.target.name]: e.target.value });
   };
 
-  const addBlog = (event) => {
+  const dispatch = useDispatch();
+
+  // add blog
+  const handleSubmit = (event) => {
     event.preventDefault();
-    createBlog(newBlog);
+    // hide the form by calling blogFormRef.current.toggleVisibility() after a new note has been created
+    blogFormRef.current.toggleVisibility();
+    // blogService.create(blogObject).then((returnedBlog) => {
+    //   setBlogs(blogs.concat(returnedBlog));
+    // });
+
+    dispatch(createBlog(newBlog));
     setNewBlog({
       title: "",
       author: "",
       url: "",
-      likes: "",
     });
+    dispatch(setNotification("info", "New blog created"));
+    setTimeout(() => {
+      dispatch(clearNotification());
+    }, 5000);
   };
 
   return (
     <div className="formDiv">
       <h2>Create New Blog</h2>
-      <form onSubmit={addBlog}>
+      <form onSubmit={handleSubmit}>
         <div>
           title:
           <input
             id="title"
             name="title"
             onChange={handleBlogChange}
-            placeholder="write here blog title"
+            placeholder="title of the blog"
             required
           />
         </div>
@@ -44,6 +59,7 @@ const BlogForm = ({ createBlog }) => {
             name="author"
             onChange={handleBlogChange}
             id="author"
+            placeholder="author of the blog"
           />
         </div>
         <div>
@@ -54,18 +70,11 @@ const BlogForm = ({ createBlog }) => {
             type="text"
             id="url"
             required
+            placeholder="url of the blog"
           />
         </div>
-        <div>
-          likes:
-          <input
-            type="number"
-            name="likes"
-            onChange={handleBlogChange}
-            id="likes"
-          />
-        </div>
-        <button type="submit">save</button>
+
+        <button type="submit">create</button>
       </form>
     </div>
   );

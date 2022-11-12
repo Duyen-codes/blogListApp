@@ -16,7 +16,7 @@ const store = configureStore({
     notification: notificationReducer,
     blogs: blogReducer,
     users: userReducer,
-    loggedInUser: loginReducer,
+    user: loginReducer,
   },
 });
 
