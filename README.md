@@ -2,9 +2,11 @@
 
 - A web application for saving blog posts
 
+- View demo: [https://shy-dawn-2480.fly.dev/](https://shy-dawn-2480.fly.dev/)
+
 ## Built with
 
-- MERN stack (MongoDB, ExpressJS, ReactJS, NodeJs)
+- MERN stack (MongoDB, Express, React, Node)
 - Redux
 - JSON web token
 
@@ -17,6 +19,6 @@
 
 ## Installation
 
-## Contribute
+## Acknowledgement
 
 - fullstackopen course by University of Helsinki

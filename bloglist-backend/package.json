@@ -7,7 +7,11 @@
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand --forceExit",
-    "start:test": "cross-env NODE_ENV=test node index.js"
+    "start:test": "cross-env NODE_ENV=test node index.js",
+    "build:ui": "rm -rf build && cd ../bloglist-frontend/ && npm run build && cp -r build ../bloglist-backend",
+    "deploy": "fly deploy",
+    "deploy:full": "npm run build:ui && npm run deploy",
+    "logs:prod": "fly logs"
   },
   "keywords": [],
   "author": "Duyen Nguyen",
