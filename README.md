@@ -47,6 +47,16 @@ npm install
 npm start
 ```
 
+Now the backend should be running("http://localhost:3003") with a connection to the database on mongodb atlas and you can see the frontend running on ("http://localhost:3000") in your browser.
+
+## Run tests
+
+Go to backend root directory, run command:
+
+```shell
+npm run test
+```
+
 ## Acknowledgement
 
 - fullstackopen course by University of Helsinki
