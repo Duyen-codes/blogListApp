@@ -33,8 +33,12 @@ function Copyright(props) {
 			{...props}
 		>
 			{"Copyright © "}
-			<Link color='inherit' href='https://mui.com/'>
-				Your Website
+			<Link
+				color='inherit'
+				href='https://github.com/Duyen-codes'
+				target='_blank'
+			>
+				Duyen Nguyen
 			</Link>{" "}
 			{new Date().getFullYear()}
 			{"."}
@@ -76,46 +80,7 @@ const LoginForm = () => {
 				}, 3000);
 			});
 	};
-	// return (
-	// 	<div>
-	// 		<h2>Log in</h2>
-	// 		<form onSubmit={handleSubmit}>
-	// 			<div>
-	// 				<TextField
-	// 					label='username'
-	// 					id='username'
-	// 					type='text'
-	// 					value={username}
-	// 					name='username'
-	// 					onChange={({ target }) => setUsername(target.value)}
-	// 				/>
-	// 			</div>
-	// 			<div>
-	// 				<TextField
-	// 					label='password'
-	// 					type='password'
-	// 					id='password'
-	// 					value={password}
-	// 					name='password'
-	// 					onChange={({ target }) => setPassword(target.value)}
-	// 				/>
-	// 			</div>
-	// 			<div>
-	// 				<Button
-	// 					type='submit'
-	// 					id='login-button'
-	// 					variant='contained'
-	// 					color='primary'
-	// 				>
-	// 					login
-	// 				</Button>
-	// 			</div>
-	// 			<p>
-	// 				*As a guest, you can login using username: root, password: salainen
-	// 			</p>
-	// 		</form>
-	// 	</div>
-	// );
+
 	return (
 		<ThemeProvider theme={theme}>
 			<Container component='main' maxWidth='xs'>
@@ -174,18 +139,6 @@ const LoginForm = () => {
 						>
 							Sign In
 						</Button>
-						<Grid container>
-							<Grid item xs>
-								<Link href='#' variant='body2'>
-									Forgot password?
-								</Link>
-							</Grid>
-							<Grid item>
-								<Link href='#' variant='body2'>
-									{"Don't have an account? Sign Up"}
-								</Link>
-							</Grid>
-						</Grid>
 					</Box>
 				</Box>
 				<p>

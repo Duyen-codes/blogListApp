@@ -19,6 +19,34 @@
 
 ## Installation
 
+- Clone the repo:
+
+```shell
+git clone https://github.com/Duyen-codes/blogListApp.git
+```
+
+To start the application for development:
+
+- cd into bloglist-backend directory and run the following commands:
+
+```shell
+npm install
+```
+
+```shell
+npm run dev
+```
+
+- cd into bloglist-frontend directory and run the following commands:
+
+```shell
+npm install
+```
+
+```shell
+npm start
+```
+
 ## Acknowledgement
 
 - fullstackopen course by University of Helsinki
